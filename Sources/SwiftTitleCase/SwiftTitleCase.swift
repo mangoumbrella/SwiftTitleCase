@@ -20,7 +20,14 @@ public enum TitleCaseTyle {
 }
 
 public extension String {
-    func titleCase(style _: TitleCaseTyle = .AP) -> String {
+    /// Converts a string to title case.
+    ///
+    /// - Parameters:
+    ///   - style: The style of title case to use.
+    ///   - preserveCase: Whether to preserve the existing capitalization of the words (except the first letter and lowercase words).
+    ///
+    /// - Returns: The title case string.
+    func titleCase(style _: TitleCaseTyle = .AP, preserveCase: Bool = true) -> String {
         let words = components(separatedBy: " ")
         guard !words.isEmpty else { return self }
 
@@ -29,13 +36,13 @@ public extension String {
 
             // Always capitalize first and last word
             if index == 0 || index == words.count - 1 {
-                return capitalizeWord(word)
+                return capitalizeWord(word, preserveCase: preserveCase)
             }
             if lowercaseWords.contains(word.lowercased()) {
                 return word.lowercased()
             }
 
-            return capitalizeWord(word)
+            return capitalizeWord(word, preserveCase: preserveCase)
         }
 
         return result.joined(separator: " ")
@@ -88,12 +95,12 @@ private let specialCaseWords = [
     "typescript": "TypeScript",
 ]
 
-fileprivate func capitalizeWord(_ word: String) -> String {
+fileprivate func capitalizeWord(_ word: String, preserveCase: Bool) -> String {
     guard !word.isEmpty else { return word }
 
     if word.contains("-") {
         return word.components(separatedBy: "-")
-            .map { capitalizeWord($0) }
+            .map { capitalizeWord($0, preserveCase: preserveCase) }
             .joined(separator: "-")
     }
     if !word.contains("'") && !word.contains("’") {
@@ -102,7 +109,11 @@ fileprivate func capitalizeWord(_ word: String) -> String {
         } else {
             var result = word
             let firstChar = result.removeFirst()
-            return String(firstChar).uppercased() + result.lowercased()
+            if preserveCase {
+                return String(firstChar).uppercased() + result
+            } else {
+                return String(firstChar).uppercased() + result.lowercased()
+            }
         }
     }
     var parts = splitWithApostrophes(word)
@@ -113,7 +124,11 @@ fileprivate func capitalizeWord(_ word: String) -> String {
             // Only apply if the apostrophe is near the start (like O'Neill, not McDonald's)
             var part = part
             let firstChar = part.removeFirst()
-            parts[index] = String(firstChar).uppercased() + part.lowercased()
+            if preserveCase {
+                parts[index] = String(firstChar).uppercased() + part
+            } else {
+                parts[index] = String(firstChar).uppercased() + part.lowercased()
+            }
         }
     }
     return parts.joined()
