@@ -12,7 +12,7 @@ let titleCased = "under the mango umbrella".titleCase()
 
 ## Why "tries its best"?
 
-Currently the implementation only handles the basic rules. It doesn't attempt to identify parts of speech contextually. For example, if "up" is used as an adverb rather than a preposition, this package would still lowercase it (unless it's the first or last word).
+Currently the implementation only handles the basic rules. It doesn't attempt to identify parts of speech contextually. For example, if "up" is used as an adverb rather than a preposition, this package would still lowercase it (unless it's the first or last word). Contributions welcome!
 
 ## License
 
