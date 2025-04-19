@@ -7,7 +7,8 @@ A Swift package that tries its best to transform strings to [AP style title case
 ```swift
 import SwiftTitleCase
 
-let titleCased = "under the mango umbrella".titleCase()
+let titleCased = "mango baby is a product under mango umbrella".titleCase()
+print(titleCased)  // Mango Baby Is a Product Under Mango Umbrella
 ```
 
 ## Why "tries its best"?
