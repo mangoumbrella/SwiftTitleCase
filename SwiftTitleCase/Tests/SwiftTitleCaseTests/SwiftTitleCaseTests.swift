@@ -30,7 +30,7 @@ import Testing
     // Words with apostrophes
     #expect("o'neill's play".titleCase() == "O'Neill's Play")
     // TODO: `McDonald's` is incorrectly cased.
-    #expect("mcdonald's restaurant".titleCase() == "Mcdonald's Restaurant")
+    #expect("mcdonald's restaurant".titleCase() == "McDonald's Restaurant")
     #expect("the king's speech".titleCase() == "The King's Speech")
 
     // Special case

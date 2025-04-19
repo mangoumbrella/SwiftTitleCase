@@ -29,13 +29,13 @@ public extension String {
 
             // Always capitalize first and last word
             if index == 0 || index == words.count - 1 {
-                return capitalizeFirstLetter(word)
+                return capitalizeWord(word)
             }
             if lowercaseWords.contains(word.lowercased()) {
                 return word.lowercased()
             }
 
-            return capitalizeFirstLetter(word)
+            return capitalizeWord(word)
         }
 
         return result.joined(separator: " ")
@@ -88,37 +88,25 @@ private let specialCaseWords = [
     "typescript": "TypeScript",
 ]
 
-private func capitalizeFirstLetter(_ word: String) -> String {
+private func capitalizeWord(_ word: String) -> String {
     guard !word.isEmpty else { return word }
 
     if word.contains("-") {
         return word.components(separatedBy: "-")
-            .map { capitalizeFirstLetter($0) }
+            .map { capitalizeWord($0) }
             .joined(separator: "-")
     }
 
-    let lowercasedWord = word.lowercased()
-    if let specialCase = specialCaseWords[lowercasedWord] {
-        return specialCase
-    }
-    var result = word
-    let firstChar = result.removeFirst()
-    result = String(firstChar).uppercased() + result.lowercased()
-
-    // Special handling for words with apostrophes like O'Neill
-    if let apostropheIndex = result.firstIndex(of: "'"),
-       apostropheIndex != result.endIndex,
-       apostropheIndex != result.index(before: result.endIndex)
-    {
-        let indexAfterApostrophe = result.index(after: apostropheIndex)
-        let charAfterApostrophe = result[indexAfterApostrophe]
-
-        // Only apply if the apostrophe is near the start (like O'Neill, not McDonald's)
-        if result.distance(from: result.startIndex, to: apostropheIndex) <= 1 {
-            result.replaceSubrange(indexAfterApostrophe ... indexAfterApostrophe,
-                                   with: String(charAfterApostrophe).uppercased())
+    var parts = word.components(separatedBy: "'")
+    for (index, part) in parts.enumerated() {
+        if let specialCase = specialCaseWords[part.lowercased()] {
+            parts[index] = specialCase
+        } else if index == 0 || part.count > 1 {
+            // Only apply if the apostrophe is near the start (like O'Neill, not McDonald's)
+            var part = part
+            let firstChar = part.removeFirst()
+            parts[index] = String(firstChar).uppercased() + part.lowercased()
         }
     }
-
-    return result
+    return parts.joined(separator: "'")
 }
