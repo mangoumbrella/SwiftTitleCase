@@ -17,7 +17,6 @@ import Testing
 
 @Test func testTitleCase() async throws {
     #expect("hello world".titleCase() == "Hello World")
-    #expect("UNDER THE MANGO UMBRELLA".titleCase() == "Under the Mango Umbrella")
     #expect("a tale of two cities".titleCase() == "A Tale of Two Cities")
 
     // Test first and last word always capitalized
@@ -26,6 +25,15 @@ import Testing
 
     // Hyphenated words
     #expect("the well-known story".titleCase() == "The Well-Known Story")
+
+    // Preserve existing capitalization
+    #expect("new open sourse package: SwiftTitleCase".titleCase() == "New Open Sourse Package: SwiftTitleCase")
+    #expect("new open sourse package: swiftTitleCase".titleCase() == "New Open Sourse Package: SwiftTitleCase")
+    #expect("I SAID VERY LOUDLY".titleCase() == "I SAID VERY LOUDLY")
+    #expect("I SAID VERY LOUDLY".titleCase(preserveCase: true) == "I SAID VERY LOUDLY")
+    #expect("I SAID VERY LOUDLY".titleCase(preserveCase: false) == "I Said Very Loudly")
+    #expect("THIS IS A TEST".titleCase() == "THIS IS a TEST")  // Notice the `a` is not preserved.
+    #expect("THIS IS A TEST".titleCase(preserveCase: false) == "This Is a Test")
 
     // Words with apostrophes
     #expect("o'neill's play".titleCase() == "O'Neill's Play")
@@ -46,7 +54,8 @@ import Testing
     // Edge cases
     #expect("".titleCase() == "")
     #expect("a".titleCase() == "A")
-    #expect("THE".titleCase() == "The")
+    #expect("THE".titleCase() == "THE")
+    #expect("THE".titleCase(preserveCase: false) == "The")
 
     // Multiple spaces
     #expect("the  lord  of  the  rings".titleCase() == "The  Lord  of  the  Rings")
