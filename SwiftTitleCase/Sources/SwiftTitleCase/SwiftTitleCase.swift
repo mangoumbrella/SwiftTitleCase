@@ -88,7 +88,7 @@ private let specialCaseWords = [
     "typescript": "TypeScript",
 ]
 
-private func capitalizeWord(_ word: String) -> String {
+fileprivate func capitalizeWord(_ word: String) -> String {
     guard !word.isEmpty else { return word }
 
     if word.contains("-") {
@@ -96,8 +96,16 @@ private func capitalizeWord(_ word: String) -> String {
             .map { capitalizeWord($0) }
             .joined(separator: "-")
     }
-
-    var parts = word.components(separatedBy: "'")
+    if !word.contains("'") && !word.contains("’") {
+        if let specialCase = specialCaseWords[word.lowercased()] {
+            return specialCase
+        } else {
+            var result = word
+            let firstChar = result.removeFirst()
+            return String(firstChar).uppercased() + result.lowercased()
+        }
+    }
+    var parts = splitWithApostrophes(word)
     for (index, part) in parts.enumerated() {
         if let specialCase = specialCaseWords[part.lowercased()] {
             parts[index] = specialCase
@@ -108,5 +116,18 @@ private func capitalizeWord(_ word: String) -> String {
             parts[index] = String(firstChar).uppercased() + part.lowercased()
         }
     }
-    return parts.joined(separator: "'")
+    return parts.joined()
+}
+
+
+fileprivate func splitWithApostrophes(_ input: String) -> [String] {
+    let pattern = "([^'’]+|['’])"
+    guard let regex = try? NSRegularExpression(pattern: pattern) else {
+        return [input]
+    }
+    let matches = regex.matches(in: input, range: NSRange(input.startIndex..., in: input))
+    return matches.compactMap { match in
+        guard let range = Range(match.range, in: input) else { return nil }
+        return String(input[range])
+    }
 }
