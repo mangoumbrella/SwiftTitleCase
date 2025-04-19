@@ -11,6 +11,10 @@ let titleCased = "mango baby is a product under mango umbrella".titleCase()
 print(titleCased)  // Mango Baby Is a Product Under Mango Umbrella
 ```
 
+## Why SwiftTitleCase?
+
+[Mango Umbrella](https://mangoumbrella.com/umbrella) has an in-house client app managing its content. I needed a convenience button that automatically transforms my blog post's titles to AP style title case. So I wrote a basic function just doing that.
+
 ## Why "tries its best"?
 
 Currently the implementation only handles the basic rules. It doesn't attempt to identify parts of speech contextually. For example, if "up" is used as an adverb rather than a preposition, this package would still lowercase it (unless it's the first or last word). Contributions welcome!
