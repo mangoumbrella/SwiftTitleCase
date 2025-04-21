@@ -50,6 +50,9 @@ import Testing
     // Special case
     #expect("MacBook Pro review".titleCase() == "MacBook Pro Review")
     #expect("iPhone and iPad apps".titleCase() == "iPhone and iPad Apps")
+    #expect("apple's ipad mini and mac mini products.".titleCase() == "Apple's iPad mini and Mac mini Products.")
+    #expect("note the mini itself should be capitalized!".titleCase() == "Note the Mini Itself Should Be Capitalized!")
+    #expect("mini mini and mini".titleCase() == "Mini Mini and Mini")
 
     // Edge cases
     #expect("".titleCase() == "")

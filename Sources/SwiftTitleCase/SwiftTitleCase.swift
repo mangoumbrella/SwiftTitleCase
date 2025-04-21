@@ -36,13 +36,13 @@ public extension String {
 
             // Always capitalize first and last word
             if index == 0 || index == words.count - 1 {
-                return capitalizeWord(word, preserveCase: preserveCase)
+                return capitalizeWord(word, preserveCase: preserveCase, beforeWord: index == 0 ? nil : words[index-1])
             }
             if lowercaseWords.contains(word.lowercased()) {
                 return word.lowercased()
             }
 
-            return capitalizeWord(word, preserveCase: preserveCase)
+            return capitalizeWord(word, preserveCase: preserveCase, beforeWord: index == 0 ? nil : words[index-1])
         }
 
         return result.joined(separator: " ")
@@ -75,36 +75,67 @@ private let lowercaseWords = [
     "yet",
 ]
 
-// TODO: The "mini" in product names like iPad mini, Mac mini should not be capitalized.
-private let specialCaseWords = [
-    "mcdonald": "McDonald",
-    "ipad": "iPad",
-    "iphone": "iPhone",
-    "ipod": "iPod",
-    "imac": "iMac",
-    "macbook": "MacBook",
-    "ios": "iOS",
-    "macos": "macOS",
-    "watchos": "watchOS",
-    "tvos": "tvOS",
-    "linkedin": "LinkedIn",
-    "youtube": "YouTube",
-    "html": "HTML",
-    "css": "CSS",
-    "javascript": "JavaScript",
-    "typescript": "TypeScript",
+fileprivate struct Transform {
+    let value: String
+    // Only transform if the word (lowercased) before is in this `beforeWords` set.
+    let beforeWords: Set<String>?
+
+    init(_ value: String, _ beforeWords: Set<String>? = nil) {
+        self.value = value
+        self.beforeWords = beforeWords
+    }
+}
+
+fileprivate let specialCaseWords: [String: Transform] = [
+    // Names
+    "mcdonald": .init("McDonald"),
+    // Products
+    "ipad": .init("iPad"),
+    "iphone": .init("iPhone"),
+    "ipod": .init("iPod"),
+    "imac": .init("iMac"),
+    "macbook": .init("MacBook"),
+    "ios": .init("iOS"),
+    "macos": .init("macOS"),
+    "watchos": .init("watchOS"),
+    "tvos": .init("tvOS"),
+    "mini": .init("mini", ["mac", "ipad"]),
+    "linkedin": .init("LinkedIn"),
+    "youtube": .init("YouTube"),
+    // Programming
+    "html": .init("HTML"),
+    "css": .init("CSS"),
+    "javascript": .init("JavaScript"),
+    "typescript": .init("TypeScript"),
 ]
 
-fileprivate func capitalizeWord(_ word: String, preserveCase: Bool) -> String {
+fileprivate func specialCased(_ word: String, beforeWord: String?) -> String? {
+    guard let specialCase = specialCaseWords[word.lowercased()] else {
+        return nil
+    }
+    if let beforeWords = specialCase.beforeWords {
+        guard let beforeLowercased = beforeWord?.lowercased() else {
+            return nil
+        }
+        if beforeWords.contains(beforeLowercased) {
+            return specialCase.value
+        }
+        return nil
+    } else {
+        return specialCase.value
+    }
+}
+
+fileprivate func capitalizeWord(_ word: String, preserveCase: Bool, beforeWord: String?) -> String {
     guard !word.isEmpty else { return word }
 
     if word.contains("-") {
         return word.components(separatedBy: "-")
-            .map { capitalizeWord($0, preserveCase: preserveCase) }
+            .map { capitalizeWord($0, preserveCase: preserveCase, beforeWord: beforeWord) }
             .joined(separator: "-")
     }
     if !word.contains("'") && !word.contains("’") {
-        if let specialCase = specialCaseWords[word.lowercased()] {
+        if let specialCase = specialCased(word, beforeWord: beforeWord) {
             return specialCase
         } else {
             var result = word
@@ -118,7 +149,7 @@ fileprivate func capitalizeWord(_ word: String, preserveCase: Bool) -> String {
     }
     var parts = splitWithApostrophes(word)
     for (index, part) in parts.enumerated() {
-        if let specialCase = specialCaseWords[part.lowercased()] {
+        if let specialCase = specialCased(part, beforeWord: beforeWord) {
             parts[index] = specialCase
         } else if index == 0 || part.count > 1 {
             // Only apply if the apostrophe is near the start (like O'Neill, not McDonald's)
