@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.or).
 
 Nothing noticeable unreleased.
 
+## v0.3.1
+
+### Changed
+
+- Downgrade the `swift-tools-version` to 5.8 so older toolchains can use SwiftTitleCase.
+
 ## v0.3.0
 
 ### Changed
