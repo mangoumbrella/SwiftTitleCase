@@ -19,6 +19,10 @@ print(titleCased)  // Mango Baby Is a Product Under Mango Umbrella
 
 Currently the implementation only handles the basic rules. It doesn't attempt to identify parts of speech contextually. For example, if "up" is used as an adverb rather than a preposition, this package would still lowercase it (unless it's the first or last word). Contributions welcome!
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
 ## License
 
 [SwiftTitleCase](https://github.com/mangoumbrella/SwiftTitleCase) is licensed under the terms of the Apache license. See [LICENSE](LICENSE) for more information.
