@@ -27,8 +27,8 @@ import Testing
     #expect("the well-known story".titleCase() == "The Well-Known Story")
 
     // Preserve existing capitalization
-    #expect("new open sourse package: SwiftTitleCase".titleCase() == "New Open Sourse Package: SwiftTitleCase")
-    #expect("new open sourse package: swiftTitleCase".titleCase() == "New Open Sourse Package: SwiftTitleCase")
+    #expect("new open source package: SwiftTitleCase".titleCase() == "New Open Source Package: SwiftTitleCase")
+    #expect("new open source package: swiftTitleCase".titleCase() == "New Open Source Package: SwiftTitleCase")
     #expect("I SAID VERY LOUDLY".titleCase() == "I SAID VERY LOUDLY")
     #expect("I SAID VERY LOUDLY".titleCase(preserveCase: true) == "I SAID VERY LOUDLY")
     #expect("I SAID VERY LOUDLY".titleCase(preserveCase: false) == "I Said Very Loudly")

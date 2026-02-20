@@ -14,7 +14,7 @@
 
 import Foundation
 
-public enum TitleCaseTyle {
+public enum TitleCaseStyle {
     case AP
     // TODO: Add more styles as needed.
 }
@@ -27,7 +27,7 @@ public extension String {
     ///   - preserveCase: Whether to preserve the existing capitalization of the words (except the first letter and lowercase words).
     ///
     /// - Returns: The title case string.
-    func titleCase(style _: TitleCaseTyle = .AP, preserveCase: Bool = true) -> String {
+    func titleCase(style _: TitleCaseStyle = .AP, preserveCase: Bool = true) -> String {
         let words = components(separatedBy: " ")
         guard !words.isEmpty else { return self }
 
@@ -50,7 +50,7 @@ public extension String {
 }
 
 // TODO: These words are not just used as adjectives, so they should be context dependent but not implemented yet.
-private let lowercaseWords = [
+private let lowercaseWords: Set<String> = [
     "a",
     "an",
     "and",
@@ -99,6 +99,7 @@ fileprivate let specialCaseWords: [String: Transform] = [
     "macos": .init("macOS"),
     "watchos": .init("watchOS"),
     "tvos": .init("tvOS"),
+    "visionos": .init("visionOS"),
     "mini": .init("mini", ["mac", "ipad"]),
     "linkedin": .init("LinkedIn"),
     "youtube": .init("YouTube"),
@@ -166,12 +167,11 @@ fileprivate func capitalizeWord(_ word: String, preserveCase: Bool, beforeWord: 
 }
 
 
+// Compiled once at module load; the pattern is a literal constant so force-try is safe.
+fileprivate let apostropheRegex = try! NSRegularExpression(pattern: "([^’’]+|[‘’])")
+
 fileprivate func splitWithApostrophes(_ input: String) -> [String] {
-    let pattern = "([^'’]+|['’])"
-    guard let regex = try? NSRegularExpression(pattern: pattern) else {
-        return [input]
-    }
-    let matches = regex.matches(in: input, range: NSRange(input.startIndex..., in: input))
+    let matches = apostropheRegex.matches(in: input, range: NSRange(input.startIndex..., in: input))
     return matches.compactMap { match in
         guard let range = Range(match.range, in: input) else { return nil }
         return String(input[range])
